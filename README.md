@@ -1049,3 +1049,392 @@ underlying your AWS resources`**.
 manage events in progress and provides proactive notification to
 help you plan for scheduled activities.
 
+# VPC
+---
+
+## VPC 
+---
+* VPC == Virtual Private Cloud
+* Private network to deploy your resources in a **`region`**
+
+## Subnets 
+---
+* Subnets allow you to partition your network inside your VPC (**`availability zone`** resource)
+* A **`public subnet`** is a subnet that is accessible from the internet
+* A **`private subnet`** is a subnet that is not accessible from the internet
+* To define access to the internet and between subnets, we use **`Route Tables`**
+
+## Internet Gateways 
+---
+* Internet Gateways helps our **`VPC instances connect with the internet`**
+* **`Public Subnets`** have a route to the **`internet gateway`**
+
+## NAT Gateways
+---
+* NAT Gateways (AWS-managed) & NAT Instances (self-managed) allow your instances in your **`Private Subnets`** to **`access`** the **`internet`** while remaining private
+
+## NACL - Network Access Control Lists 
+---
+* A **`firewall`** which **`controls traffic`** to and from **`subnet`**
+* Can have **`ALLOW`** and **`DENY`** rules
+* Are attached at the Subnet level
+* Rules only include IP addresses
+* **`Stateless`**: Return traffic should have explicit permission
+
+## Security Groups 
+---
+* A **`firewall`** that **`controls traffic`** to and from an ENI / an **`EC2`** Instance
+* Can have only **`ALLOW`** rules
+* Rules include IP addresses and other security groups
+* **`Stateful`**: Return traffic is allowed
+
+## VPC Flow Logs
+---
+* Capture information about IP traffic going into your interfaces:
+    * VPC Flow Logs
+    * Subnet Flow Logs
+    * Elastic Network Interface Flow Logs
+* VPC Flow logs data can go to S3 / CloudWatch Logs
+
+## VPC Peering 
+---
+* **`Connect two VPC`**, privately using AWS’ network
+* Must **`not have overlapping CIDR`** (IP address range)
+* VPC Peering connection is **`not transitive`** (must be established for each VPC that need to communicate with one another)
+
+## VPC Endpoints
+---
+* Endpoints allow you to **`connect to AWS Services using a private network instead of the public www network`**
+* This gives you enhanced security and lower latency to access AWS services
+* **`VPC Endpoint Gateway`**: S3 & DynamoDB
+* **`VPC Endpoint Interface`**: the rest
+
+## Site to Site VPN
+---
+* Connect an **`on-premise VPN to AWS`**
+* The connection is automatically encrypted
+* Goes over the **`public internet`**
+
+## Direct Connect (DX)
+---
+* Establish a **`physical connection between on-premises and AWS`**
+* The connection is private, secure and fast
+* Goes over a **`private network`**
+* Takes at least a month to establish
+
+
+## Transit Gateway
+---
+* For having transitive peering between thousands of VPC and on-premises, hub-and-spoke (**`star`**) **`connection`**
+* **`One single Gateway`** to provide this functionality
+* Works with Direct Connect Gateway, VPN connections
+
+# Security & Compliance
+
+## DDOS Protection on AWS
+---
+* **`AWS Shield Standard`**: protects against DDOS attack for your website
+and applications, for all customers at no additional costs
+* **`AWS Shield Advanced`**: 24/7 premium DDoS protection
+* **`AWS WAF – Web Application Firewall`**: 
+    * Filter specific requests based on rules
+    * Layer 7 (HTTP) protection
+    * Deploy on ALB, API Gateway, CloudFront
+* **`CloudFront (edge location cache)`** and **`Route 53 (DNS service)`**:
+    * Availability protection using global edge network
+    * Combined with AWS Shield, provides attack mitigation at the edge
+* Be ready to scale – leverage AWS Auto Scaling
+
+## Penetration Testing on AWS Cloud
+---
+* Penetration Testing can be carried out for **`8 services without AWS permission`**
+    1. Amazon EC2 instances, NAT Gateways, and Elastic Load Balancers
+    2. Amazon RDS
+    3. Amazon CloudFront
+    4. Amazon Aurora
+    5. Amazon API Gateways
+    6. AWS Lambda and Lambda Edge functions
+    7. Amazon Lightsail resources
+    8. Amazon Elastic Beanstalk environments
+
+## AWS KMS (Key Management Service)
+---
+* **`KMS = AWS manages the encryption keys for us`**
+* Encryption Opt-in:
+    * EBS volumes: encrypt volumes
+    * S3 buckets: Server-side encryption of objects
+    * Redshift database: encryption of data
+    * RDS database: encryption of data
+    * EFS drives: encryption of data
+* Encryption Automatically enabled:
+    * CloudTrail Logs
+    * S3 Glacier
+    * Storage Gateway
+
+## CloudHSM
+---
+* **`Dedicated hardware`** provided to user for encryption
+* You **`manage your own encryption keys`** entirely (not AWS)
+* HSM == Hardware Security Module
+
+## Types of Customer Master Keys: CMK
+---
+* **`Customer Managed CMK`**:
+    * Create, manage and used by the customer, can enable or disable
+* **`AWS managed CMK`**:
+    * Created, managed and used on the customer’s behalf by AWS
+* **`AWS owned CMK`**:
+    * Collection of CMKs that an AWS service owns and manages to use in multiple accounts
+* **`CloudHSM Keys`** (custom keystore):
+    * Keys generated from your own CloudHSM hardware device
+
+## AWS Certificate Manager (ACM)
+---
+* Let’s you easily provision, manage, and deploy **`SSL/TLS Certificates`**
+
+## AWS Secrets Manager
+---
+* **`Keep secret`** password or anything
+* **`Mostly meant for integration with Amazon RDS`**
+
+## AWS Artifact (not really a service)
+---
+* Portal that **`provides`** customers with on-demand access to **`AWS compliance documentation and AWS agreements`**
+
+## Amazon GuardDuty
+---
+* Intelligent Threat discovery to **`Protect AWS Account`**
+* Uses **`Machine Learning`** algorithms, anomaly detection, 3rd party data
+* **`Can setup CloudWatch Event rules`** to be notified in case of findings
+
+## Amazon Inspector
+---
+* Automated **`Security Assessments`** for **`EC2 instances`**
+* AWS Inspector Agent **`must be installed`** on OS in EC2 instances
+
+## AWS Config
+---
+* Helps with **`auditing`** and **`recording compliance`** of your AWS resources by **`recording configurations changes`** over time
+* Have to apply config rules
+* Can send SNS notifications
+* **`Per-region service`** but **`can be aggregated`** over multiple regions and account
+
+## Amazon Macie
+---
+* Amazon Macie is a fully managed data security and data privacy service
+that uses **`machine learning`** and pattern matching to **`discover and
+protect your sensitive data in AWS`**
+
+## AWS Security Hub
+---
+* **`Central security tool`** to manage security across several AWS accounts and automate security checks
+* **`Integrated dashboards`** showing current security and compliance status to quickly take actions
+
+## Amazon Detective
+---
+* Amazon Detective analyzes, investigates, and quickly identifies the **`root cause of security issues`** or suspicious activities (using ML and graphs)
+
+## AWS Abuse
+---
+* **`Report suspected AWS resources used for abusive or illegal purposes`**
+
+## Root user privileges
+---
+Actions that can be performed only by the root user:
+* **`Change account settings`** (account name, email address, root user password, root user access keys)
+* View certain tax invoices
+* **`Close your AWS account`**
+* Restore IAM user permissions
+* **`Change or cancel your AWS Support plan`**
+* **`Register as a seller in the Reserved Instance Marketplace`**
+* Configure an Amazon S3 bucket to enable MFA
+* Edit or delete an Amazon S3 bucket policy that includes an invalid VPC ID or VPC endpoint ID
+* Sign up for GovCloud
+
+
+# Machine Learning Section
+
+* **`Amazon Rekognition` :** Face detection, labeling, celebrity recognition
+* **`Amazon Transcribe` :** audio to text
+* **`Amazon Polly` :** text to audio
+* **`Amazon Translate :`** translations
+* **`Amazon Lex ` :** build conversational bots – chatbots
+* **`Amazon Connect` :** cloud contact center
+* **`Amazon Comprehend` :** natural language processing
+* **`Amazon SageMaker` :** Create and deploy ML models
+* **`Amazon Forecast` :** build highly accurate forecasts
+* **`Amazon Kendra` :** ML-powered document search engine
+* **`Amazon Personalize` :** real-time personalized recommendations
+
+# Account Management, Billing & Support
+
+## AWS Organizations
+---
+* Allows to **`manage multiple AWS accounts`**
+* The main account is the master account
+* Cost Benefits:
+    * **`Consolidated Billing`** across all accounts - single payment method
+    * Pricing benefits from aggregated usage (volume discount for EC2, S3…)
+    * Pooling of Reserved EC2 instances for optimal savings
+* Restrict account privileges using **`Service Control Policies (SCP)`**
+* **`Organizational Units (OU)`** are other aws accounts who are under the master account
+
+
+## AWS Control Tower
+---
+* Easy way to **`set up and govern a secure and compliant multi-account
+AWS environment`** based on best practices
+* AWS Control Tower **`runs on top of AWS Organizations`**
+* It automatically sets up AWS Organizations to organize accounts and implement SCPs (Service Control Policies)
+
+## Pricing Models in AWS
+---
+1. **`Pay as you go`**
+2. **`Save when you reserve`**
+3. **`Pay less by using more`**
+4. **`Pay less as AWS grows`**
+
+## Free services & free tier in AWS
+---
+* IAM
+* VPC
+* Consolidated Billing
+* Elastic Beanstalk
+* CloudFormation
+* Auto Scaling Groups
+
+## AWS Compute Optimizer
+---
+* Reduce costs and improve performance by **`recommending optimal AWS resources`** for your workloads
+* Uses **`Machine Learning`** to analyze your resources configurations and their utilization CloudWatch metrics
+
+## TCO Calculator
+---
+* TCO == Total Cost of Ownership
+* Provides a detailed report for presentation **`comparing benefit of using AWS cloud services over using on premise datacenter`**
+
+## Simple Monthly Calculator / Pricing Calculator
+---
+* **`Estimate the cost for your architecture solution`**
+
+## Billing Dashboard
+---
+* **`Dashboard displaying detailed bill for all your usage`**
+
+## Cost Allocation Tags
+---
+* Use cost allocation tags to **`track your AWS costs on a detailed level`**
+* Types: 
+    * AWS generated tags 
+    * User-defined tags
+
+## Cost and Usage Reports
+---
+* The AWS Cost & Usage Report contains the **`most comprehensive set
+of AWS cost and usage data available`**, including additional metadata
+about AWS services, pricing, and reservations (e.g., Amazon EC2
+Reserved Instances (RIs))
+
+## Cost Explorer
+---
+* Provides helpful **`cost and usage insights`**
+* **`Forecast`** usage up to **`12 months`** based on previous usage
+
+## CloudWatch Billing Alarms
+---
+* CloudWatch Billing Alarm is intended a simple alarm (**`not as powerful as AWS Budgets`**)
+
+## Budgets
+---
+* Create budget and **`send alarms when costs exceeds the budget or forecasted budget`**
+* **`3 types`** of budgets: **`Usage`**, **`Cost`**, **`Reservation`**
+
+## Trusted Advisor
+---
+* Analyze your AWS accounts and provides recommendations for:
+    * Cost optimization
+    * Performance
+    * Secutirty
+    * Fault Tolerance
+    * Service Limits
+* **`Full Trusted Advisor – Available for Business & Enterprise`** support plans
+
+## AWS Support Plans
+---
+* **`Basic` :** Free
+* **`Developer` :** Business hours email access
+* **`Business` :** 24x7 phone, email, and chat access
+* **`Enterprise` :** Technical Account Manager, Concierge Support Team
+
+# Advanced Identity Section
+
+## AWS STS (Security Token Service)
+---
+* Enables you to **`create temporary`**, **`limited privileges credentials`** to access your AWS resources
+
+## Amazon Cognito
+---
+* **`Identity for your Web and Mobile applications users (potentially millions)`**
+
+## AWS Directory Services
+---
+* Same as **`Microsoft Active Directory`** to login to any machine using same credential
+
+## AWS Single Sign-On (SSO)
+---
+* To access **`multiple accounts and 3rd-party business applications`**
+
+# Other AWS services section
+
+## Amazon WorkSpaces
+---
+* **`Virtual Desktop`** Infrastructure
+
+## Amazon AppStream 2.0
+---
+* **`Stream a desktop application to web browsers`**
+* Allow to configure an instance type per application type (CPU, RAM, GPU)
+
+## Amazon Sumerian
+---
+* Create and run virtual reality (VR), augmented reality (AR), and 3D applications
+* Can be used to quickly **`create 3D models with animations`**
+
+## AWS IoT Core
+---
+* AWS IoT Core allows you to easily **`connect IoT devices to the AWS Cloud`**
+
+## Amazon Elastic Transcoder
+---
+* **`Convert media files stored in S3`** into media files in the formats required by consumer playback devices (phones etc..)
+
+## AWS Device Farm
+---
+* Fully-managed service that **`tests your web and mobile apps against
+desktop browsers, real mobile devices, and tablets`**
+
+## AWS Backup
+---
+* Fully-managed service to centrally **`manage and automate backups`** across AWS services
+
+## CloudEndure Disaster Recovery
+---
+* Quickly and easily **`recover`** your **`physical`**, **`virtual`**, and cloud-based **`servers into AWS`**
+* Continuous block-level replication for your servers
+
+
+# AWS Architecting & Ecosystem Section
+
+## Well Architected Framework
+---
+* **5 Pillars**
+    1. **`Operational Excellence`**
+    2. **`Security`**
+    3. **`Reliability`**
+    4. **`Performance Efficiency`**
+    5. **`Cost Optimization`**
+
+## AWS Well-Architected Tool
+---
+* **`Free tool to review your architectures against the 5 pillars of Well-Architected Framework`** and adopt architectural best practices
+
